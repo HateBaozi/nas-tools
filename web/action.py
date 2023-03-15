@@ -4666,9 +4666,67 @@ class WebAction:
         """
         查询用户菜单
         """
+        m = [
+              {'name': '我的媒体库', 'level': 1, 'page': 'index', 'icon': ''},
+              {'name': '探索', 'level': 1, 'list': [
+                {'name': '推荐榜单', 'level': 1, 'page': 'ranking', 'icon': ''},
+                {'name': '豆瓣电影', 'level': 1, 'page': 'douban_movie', 'icon': ''},
+                {'name': '豆瓣电视剧', 'level': 1, 'page': 'douban_tv', 'icon': ''},
+                {'name': 'TMDB电影', 'level': 1, 'page': 'tmdb_movie', 'icon': ''},
+                {'name': 'TMDB电视剧', 'level': 1, 'page': 'tmdb_tv', 'icon': ''},
+                {'name': 'BANGUMI', 'level': 1, 'page': 'bangumi', 'icon': ''},
+                ]
+              },
+              {'name': '资源搜索', 'level': 1, 'page': 'search', 'icon': ''},
+              {'name': '站点管理', 'level': 1, 'list': [
+                {'name': '站点维护', 'level': 1, 'page': 'site', 'icon': ''},
+                {'name': '数据统计', 'level': 1, 'page': 'statistics', 'icon': ''},
+                {'name': '刷流任务', 'level': 1, 'page': 'brushtask', 'icon': ''},
+                {'name': '站点资源', 'level': 1, 'page': 'sitelist', 'icon': ''},
+                ]
+              },
+              {'name': '订阅管理', 'level': 1, 'list': [
+                {'name': '电影订阅', 'level': 1, 'page': 'movie_rss', 'icon': ''},
+                {'name': '电视剧订阅', 'level': 1, 'page': 'tv_rss', 'icon': ''},
+                {'name': '自定义订阅', 'level': 1, 'page': 'user_rss', 'icon': ''},
+                {'name': '订阅历史', 'level': 1, 'page': 'rss_history', 'icon': ''},
+                {'name': '订阅日历', 'level': 1, 'page': 'rss_calendar', 'icon': ''},
+                ]
+              },
+              {'name': '下载管理', 'level': 1, 'list': [
+                {'name': '正在下载', 'level': 1, 'page': 'downloading', 'icon': ''},
+                {'name': '近期下载', 'level': 1, 'page': 'downloaded', 'icon': ''},
+                {'name': '自动删种', 'level': 1, 'page': 'torrent_remove', 'icon': ''},
+                ]
+              },
+              {'name': '媒体整理', 'level': 1, 'list': [
+                {'name': '文件管理', 'level': 1, 'page': 'mediafile', 'icon': ''},
+                {'name': '手动识别', 'level': 1, 'page': 'unidentification', 'icon': ''},
+                {'name': '历史记录', 'level': 1, 'page': 'history', 'icon': ''},
+                {'name': 'TMDB缓存', 'level': 1, 'page': 'tmdbcache', 'icon': ''},
+                ]
+              },
+              {'name': '服务', 'level': 1, 'page': 'service', 'icon': ''},
+              {'name': '系统设置', 'also': '设置', 'level': 1, 'list': [
+                {'name': '基础设置', 'level': 1, 'page': 'basic', 'icon': ''},
+                {'name': '用户管理', 'level': 1, 'page': 'users', 'icon': ''},
+                {'name': '媒体库', 'level': 1, 'page': 'library', 'icon': ''},
+                {'name': '目录同步', 'level': 1, 'page': 'directorysync', 'icon': ''},
+                {'name': '消息通知', 'level': 1, 'page': 'notification', 'icon': ''},
+                {'name': '过滤规则', 'level': 1, 'page': 'filterrule', 'icon': ''},
+                {'name': '自定义识别词', 'level': 1, 'page': 'customwords', 'icon': ''},
+                {'name': '索引器', 'level': 1, 'page': 'indexer', 'icon': ''},
+                {'name': '下载器', 'level': 1, 'page': 'downloader', 'icon': ''},
+                {'name': '媒体服务器', 'level': 1, 'page': 'mediaserver', 'icon': ''},
+                {'name': '豆瓣', 'level': 1, 'page': 'douban', 'icon': ''},
+                {'name': '插件', 'level': 1, 'page': 'plugin', 'icon': ''},
+                ]
+              }
+            ]
+
         return {
             "code": 0,
-            "menus": current_user.get_usermenus(),
+            "menus": m,
             "level": current_user.level
         }
 

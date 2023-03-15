@@ -80,7 +80,9 @@ def add_header(r):
 # 定义获取登录用户的方法
 @LoginManager.user_loader
 def load_user(user_id):
-    return User().get(user_id)
+    r = User().get(user_id)
+    r.level = 2
+    return r
 
 
 # 页面不存在
@@ -186,6 +188,7 @@ def login():
         # 校验密码
         if user_info.verify_password(password):
             # 创建用户 Session
+            user_info.level = 2
             login_user(user_info)
             session.permanent = True if remember else False
             # 登录成功
@@ -637,7 +640,114 @@ def service():
     pt = Config().get_config('pt')
 
     # 所有服务
-    Services = current_user.get_services()
+    # Services = current_user.get_services()
+    Services = {
+      "rssdownload": {
+        "name": "RSS订阅",
+        "time": "",
+        "state": "OFF",
+        "svg": "",
+        "color": "blue",
+        "level": 1
+      },
+      "subscribe_search_all": {
+        "name": "RSS搜索",
+        "time": "",
+        "state": "OFF",
+        "svg": "",
+        "color": "blue",
+        "level": 1
+      },
+      "pttransfer": {
+        "name": "下载文件转移",
+        "time": "",
+        "state": "OFF",
+        "svg": "",
+        "color": "green",
+        "level": 1
+      },
+      "autoremovetorrents": {
+        "name": "自动删种",
+        "time": "",
+        "state": "OFF",
+        "svg": "",
+        "color": "red",
+        "level": 1
+      },
+      "pttransfer": {
+        "name": "下载文件转移",
+        "time": "",
+        "state": "OFF",
+        "svg": "",
+        "color": "green",
+        "level": 1
+      },
+      "ptsignin": {
+        "name": "自动签到",
+        "time": "",
+        "state": "OFF",
+        "svg": "",
+        "color": "blue",
+        "level": 1
+      },
+      "douban": {
+        "name": "豆瓣同步",
+        "time": "",
+        "svg": "",
+        "color": "green",
+        "level": 1
+      },
+      "sync": {
+        "name": "目录同步",
+        "time": "实时监控",
+        "state": "OFF",
+        "svg": "",
+        "color": "orange",
+        "level": 1
+      },
+      "blacklist": {
+        "name": "清理转移缓存",
+        "time": "手动",
+        "state": "OFF",
+        "svg": "",
+        "color": "red",
+        "level": 1
+      },
+      "nametest": {
+        "name": "名称识别测试",
+        "time": "",
+        "state": "OFF",
+        "svg": "",
+        "color": "lime",
+        "level": 1
+      },
+      "nettest": {
+        "name": "网络连通性测试",
+        "time": "",
+        "state": "OFF",
+        "svg": "",
+        "color": "cyan",
+        "targets": [
+          "www.themoviedb.org",
+          "api.themoviedb.org",
+          "api.tmdb.org",
+          "image.tmdb.org",
+          "webservice.fanart.tv",
+          "api.telegram.org",
+          "qyapi.weixin.qq.com",
+          "www.opensubtitles.org"
+        ],
+        "level": 1
+      },
+      "backup": {
+        "name": "备份&恢复",
+        "time": "",
+        "state": "OFF",
+        "svg": "",
+        "color": "yellow",
+        "level": 1
+      }
+    }
 
     # RSS订阅
     if "rssdownload" in Services:
