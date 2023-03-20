@@ -602,15 +602,13 @@ def statistics():
                 SiteRatios.append(round(float(ratio), 1))
 
     # 近期上传下载各站点汇总
-    CurrentUpload, CurrentDownload, _, _, _ = SiteUserInfo().get_pt_site_statistics_history(
-        days=2)
+    # CurrentUpload, CurrentDownload, _, _, _ = SiteUserInfo().get_pt_site_statistics_history(
+    #    days=2)
 
     # 站点用户数据
     SiteUserStatistics = WebAction().get_site_user_statistics({"encoding": "DICT"}).get("data")
 
     return render_template("site/statistics.html",
-                           CurrentDownload=CurrentDownload,
-                           CurrentUpload=CurrentUpload,
                            TotalDownload=TotalDownload,
                            TotalUpload=TotalUpload,
                            TotalSeedingSize=TotalSeedingSize,
@@ -1649,7 +1647,7 @@ def subscribe():
         code, msg, _ = Subscribe().add_rss_subscribe(mtype=media_type,
                                                      name=meta_info.get_name(),
                                                      year=meta_info.year,
-                                                     in_form=RssType.Auto,
+                                                     channel=RssType.Auto,
                                                      mediaid=tmdbId,
                                                      in_from=SearchType.API,
                                                      user_name=user_name)
@@ -1663,7 +1661,7 @@ def subscribe():
             code, msg, _ = Subscribe().add_rss_subscribe(mtype=media_type,
                                                          name=meta_info.get_name(),
                                                          year=meta_info.year,
-                                                         in_form=RssType.Auto,
+                                                         channel=RssType.Auto,
                                                          mediaid=tmdbId,
                                                          season=season,
                                                          in_from=SearchType.API,
