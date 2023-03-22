@@ -24,9 +24,9 @@ class ModuleConf(object):
 
     # 全量转移模式
     RMT_MODES = {
-        "copy": RmtMode.COPY,
         "link": RmtMode.LINK,
         "softlink": RmtMode.SOFTLINK,
+        "copy": RmtMode.COPY,
         "move": RmtMode.MOVE,
         "rclone": RmtMode.RCLONE,
         "rclonecopy": RmtMode.RCLONECOPY,
