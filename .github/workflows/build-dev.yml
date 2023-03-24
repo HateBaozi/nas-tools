@@ -3,13 +3,13 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - dev
     paths:
       - version.py
-      - .github/workflows/build.yml
+      - .github/workflows/build-dev.yml
       - package_list.txt
       - requirements.txt
-      - docker/Dockerfile
+      - docker/Dockerfile.dev
       - docker/entrypoint.sh
 jobs:
   build:
@@ -46,11 +46,10 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: docker/Dockerfile
+          file: docker/Dockerfile.dev
           platforms: |
             linux/amd64
             linux/arm64
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/nas-tools:latest
-            ${{ secrets.DOCKER_USERNAME }}/nas-tools:${{ env.app_version }}
+            ${{ secrets.DOCKER_USERNAME }}/nas-tools:${{ env.app_version }}-beta
