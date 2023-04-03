@@ -676,7 +676,7 @@ class FileTransfer:
                                     continue
                                 handler_flag = True
                             else:
-                                log.warn("【Rmt】文件 %s 已存在" % ret_file_path)
+                                log.warn(f"【Rmt】文件 {ret_file_path} 已存在, 原文件大小 {orgin_file_size}, 新文件大小 {media.size}, 不覆盖")
                                 failed_count += 1
                                 continue
                         else:
