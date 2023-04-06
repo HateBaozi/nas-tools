@@ -26,6 +26,8 @@ class OpenAiHelper:
             proxy_conf = Config().get_proxies()
             if proxy_conf and proxy_conf.get("https"):
                 openai.proxy = proxy_conf.get("https")
+        #控制OpenAI超时
+        openai.api_requestor.TIMEOUT_SECS = 10
 
     def get_state(self):
         return True if self._api_key else False
