@@ -59,6 +59,7 @@ class DoubanRank(_IPluginModule):
     _cron = ""
     _rss_addrs = []
     _ranks = []
+    _vote = 0
     _scheduler = None
 
     def init_config(self, config: dict = None):
@@ -69,6 +70,7 @@ class DoubanRank(_IPluginModule):
             self._enable = config.get("enable")
             self._onlyonce = config.get("onlyonce")
             self._cron = config.get("cron")
+            self._vote = int(config.get("vote")) if config.get("vote") else 0
             rss_addrs = config.get("rss_addrs")
             if rss_addrs:
                 if isinstance(rss_addrs, str):
@@ -86,14 +88,13 @@ class DoubanRank(_IPluginModule):
         if self.get_state() or self._onlyonce:
             self._scheduler = BackgroundScheduler(timezone=Config().get_timezone())
             if self._cron:
-                self._scheduler.add_job(self.__refresh_rss, CronTrigger.from_crontab(self._cron))
-            if self._onlyonce:
-                self._scheduler.add_job(self.__refresh_rss, 'date',
-                                        run_date=datetime.now(tz=pytz.timezone(Config().get_timezone())))
-            self._scheduler.print_jobs()
-            self._scheduler.start()
+                self.info(f"订阅服务启动，周期：{self._cron}")
+                self._scheduler.add_job(self.__refresh_rss,
+                                        CronTrigger.from_crontab(self._cron))
             if self._onlyonce:
                 self.info(f"订阅服务启动，立即运行一次")
+                self._scheduler.add_job(self.__refresh_rss, 'date',
+                                        run_date=datetime.now(tz=pytz.timezone(Config().get_timezone())))
                 # 关闭一次性开关
                 self._onlyonce = False
                 self.update_config({
@@ -101,10 +102,13 @@ class DoubanRank(_IPluginModule):
                     "enable": self._enable,
                     "cron": self._cron,
                     "ranks": self._ranks,
+                    "vote": self._vote,
                     "rss_addrs": "\n".join(self._rss_addrs)
                 })
-            if self._cron:
-                self.info(f"订阅服务启动，周期：{self._cron}")
+            if self._scheduler.get_jobs():
+                # 启动服务
+                self._scheduler.print_jobs()
+                self._scheduler.start()
 
     def get_state(self):
         return self._enable and self._cron and (self._ranks or self._rss_addrs)
@@ -145,6 +149,18 @@ class DoubanRank(_IPluginModule):
                                 {
                                     'id': 'cron',
                                     'placeholder': '0 0 0 ? *',
+                                }
+                            ]
+                        },
+                        {
+                            'title': '评分',
+                            'required': "",
+                            'tooltip': '大于该评分的才会被订阅，不填则不限制',
+                            'type': 'text',
+                            'content': [
+                                {
+                                    'id': 'vote',
+                                    'placeholder': '0',
                                 }
                             ]
                         }
@@ -254,9 +270,14 @@ class DoubanRank(_IPluginModule):
                         return
                     # 识别媒体信息
                     media_info = WebUtils.get_mediainfo_from_id(mtype=rss_info.get("type"),
-                                                                mediaid=f"DB:{rss_info.get('doubanid')}")
+                                                                mediaid=f"DB:{rss_info.get('doubanid')}",
+                                                                wait=True)
                     if not media_info:
-                        self.warn(f"未查询到TMDB媒体信息：{rss_info.get('doubanid')} - {rss_info.get('title')}")
+                        self.warn(f"未查询到媒体信息：{rss_info.get('doubanid')} - {rss_info.get('title')}")
+                        continue
+                    if self._vote and media_info.vote_average \
+                            and media_info.vote_average < self._vote:
+                        self.info(f"评分低于限制：{media_info.get_title_string()}，跳过 ．．．")
                         continue
                     # 检查媒体服务器是否存在
                     item_id = self.mediaserver.check_item_exists(mtype=media_info.type,
